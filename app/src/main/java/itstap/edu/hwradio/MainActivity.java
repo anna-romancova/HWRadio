@@ -119,15 +119,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-
         switch (view.getId()){
             case R.id.playTrigger:
                 if (!radioIsOpen) {
-
-//               Toast.makeText(this,"click play",Toast.LENGTH_SHORT).show();
                 PendingIntent pi = createPendingResult(1, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-                Toast.makeText(this,streamUrl,Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent("itstap.edu.hwradio0.SecondServiceRadio")
+                    Intent intent = new Intent(getBaseContext(),SecondServiceRadio.class)
                         .setAction(PlaybackStatus.IDLE)
                         .putExtra("url", streamUrl)
                         .putExtra("name", name.getText().toString())
@@ -136,25 +132,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 int result = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
                 if (result == PackageManager.PERMISSION_GRANTED) {
                     getApplicationContext().startService(intent);
+                    Toast.makeText(this,"click play",Toast.LENGTH_SHORT).show();
+                    playTrigger.setImageResource(R.drawable.ic_pause_black);
+                    radioIsOpen=true;
                     Log.d("startService","startService");
                 }
-                    radioIsOpen=true;
+
 
 
                 }else {
-                    Toast.makeText(this,"click stop",Toast.LENGTH_SHORT).show();
+
                     PendingIntent pi = createPendingResult(2, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    Intent  intent = new Intent("itstap.edu.hwradio0.SecondServiceRadio")
+                    Intent  intent = new Intent(getBaseContext(),SecondServiceRadio.class)
                             .setAction(PlaybackStatus.STOPPED)
-                            .putExtra("name", "Stop")
                             .putExtra("pi",pi);
-
-
                     intent.setPackage(this.getPackageName());
                     int result = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
                     if (result == PackageManager.PERMISSION_GRANTED) {
                         startService(intent);
+                        Toast.makeText(this,"click stop",Toast.LENGTH_SHORT).show();
+                        playTrigger.setImageResource(R.drawable.ic_play_arrow_black);
+                        radioIsOpen=false;
+
                     }
                 }
 

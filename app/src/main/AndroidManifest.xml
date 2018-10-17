@@ -23,7 +23,7 @@
         </activity>
 
         <service
-            android:name="itstap.edu.hwradio.SecondServiceRadio"
+            android:name=".SecondServiceRadio"
             android:enabled="true"
             android:exported="true"
             android:process=":process">

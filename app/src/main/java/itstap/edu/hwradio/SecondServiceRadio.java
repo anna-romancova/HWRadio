@@ -17,6 +17,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import de.greenrobot.event.EventBus;
 
@@ -25,21 +26,16 @@ import java.io.IOException;
 public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnErrorListener{
-    private NotificationManager notifManager;
     public static final String STATION_URI = "Station_uri";
     public static final String STATION_NAME = "Station_name";
 
 
-    private static final String LOG_TAG = "PlaybackService";
+    private static final String LOG_TAG = "SecondServiceRadio";
     private final boolean L = true;
-    public static final String ACTION_PLAY = "ACTION_PLAY";
-    public static final String ACTION_PAUSE = "ACTION_PAUSE";
-    public static final String ACTION_STOP = "ACTION_STOP";
     private String status;
     private AudioManager audioManager;
     private MediaControllerCompat.TransportControls transportControls;
-    private String strAppName;
-    private String strLiveBroadcast;
+
     private PlaybackStateCompat playbackState;
     private Binder binder = new ServiceBinder();
     private MediaSessionCompat mediaSession;
@@ -73,9 +69,8 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
     @Override
     public void onCreate() {
         super.onCreate();
-        notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//        notificationManager = new MediaNotificationManager(this);
+        notificationManager = new MediaNotificationManager(this);
         Log.d("create","Create service");
         // set the initial playback state
         playbackState = new PlaybackStateCompat.Builder()
@@ -84,7 +79,7 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
 
         // instantiate the media session
         mediaSession = new MediaSessionCompat(this, LOG_TAG);
-       transportControls = mediaSession.getController().getTransportControls();
+        transportControls = mediaSession.getController().getTransportControls();
         mediaSession.setCallback(mediaSessionCallback);
         mediaSession.setActive(true);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -94,91 +89,47 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
 
     }
 
-    final MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
-
+    private MediaSessionCompat.Callback mediaSessionCallback = new MediaSessionCompat.Callback() {
         @Override
-        public void onPlayFromSearch(String query, Bundle extras) {
-            Uri uri = extras.getParcelable(STATION_URI);
-            onPlayFromUri(uri, extras);
+        public void onPause() {
+            super.onPause();
+            pause();
         }
-
-
-        @Override
-        public void onPlayFromUri(Uri uri, Bundle extras) {
-
-            String name = extras.getString(STATION_NAME);
-
-            try {
-                switch (playbackState.getState()) {
-                    case PlaybackStateCompat.STATE_NONE:
-                    case PlaybackStateCompat.STATE_STOPPED:
-
-                        mediaPlayer.reset();
-                        mediaPlayer.setDataSource(SecondServiceRadio.this, uri);
-                        mediaPlayer.prepareAsync();
-                        if(L) Log.i(LOG_TAG, "Buffering audio");
-                        // set the playback state & set the audio's metadata
-                        playbackState = new PlaybackStateCompat.Builder()
-                                .setState(PlaybackStateCompat.STATE_BUFFERING, 0, 1.0f)
-                                .build();
-                        mediaSession.setPlaybackState(playbackState);
-                        mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, name)
-                                .build());
-                        break;
-                    default:
-                        // stop
-                        mediaPlayer.stop();
-                        playbackState = new PlaybackStateCompat.Builder()
-                                .setState(PlaybackStateCompat.STATE_STOPPED, 0, 1.0f)
-                                .build();
-                        mediaSession.setPlaybackState(playbackState);
-                        updateNotification();
-                        break;
-                }
-
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error thrown during playback");
-            }
-        }
-
-
-//        @Override
-//        public void onPlay() {
-//            if (playbackState.getState() == PlaybackStateCompat.STATE_STOPPED) {
-//                if(L) Log.i(LOG_TAG, "Calling onPlay()");
-//                mediaPlayer.start();
-//                playbackState = new PlaybackStateCompat.Builder()
-//                        .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.0f)
-//                        .build();
-//                mediaSession.setPlaybackState(playbackState);
-//                updateNotification();
-//            }
-//        }
-
 
         @Override
         public void onStop() {
-            int state = playbackState.getState();
-            if(state == PlaybackStateCompat.STATE_PLAYING ||
-                    state == PlaybackStateCompat.STATE_BUFFERING) {
-                if(L) Log.i(LOG_TAG, "Calling onStop()");
-                mediaPlayer.stop();
-                playbackState = new PlaybackStateCompat.Builder()
-                        .setState(PlaybackStateCompat.STATE_STOPPED, 0, 1.0f)
-                        .build();
-                mediaSession.setPlaybackState(playbackState);
-                updateNotification();
+            super.onStop();
+            stop();
+        }
 
+        @Override
+        public void onPlay() {
+            super.onPlay();
+            resume();
 
-            }
         }
     };
 
-    private void updateNotification() {
-
-        Log.i(LOG_TAG, "Notification updated, if one existed");
+    private void stop() {
+        if(mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+        notificationManager.cancelNotify();
     }
+
+    private void pause() {
+        mediaPlayer.pause();
+        notificationManager.startNotify(PlaybackStatus.PAUSED);
+    }
+    public void resume() {
+
+        if(streamUrl != null)
+            play(streamUrl);
+        notificationManager.startNotify(PlaybackStatus.PLAYING);
+    }
+
+
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -243,29 +194,41 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        streamUrl= intent.getStringExtra("url");
         String action = intent.getAction();
-        Log.e("action",action);
-        //        if(action.equals(PlaybackStatus.IDLE)){
+        if(TextUtils.isEmpty(action))
+            return START_NOT_STICKY;
+        Log.e("action_onStartCommand",action);
+        streamUrl= intent.getStringExtra("url");
+        switch (action){
+            case PlaybackStatus.IDLE :
+                Thread tr=new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent in = new Intent(getBaseContext(), MainActivity.class);
+                        in.putExtra("status", PlaybackStatus.PLAYING);
+                        play(streamUrl);
 
-        Thread tr=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Intent in = new Intent(getBaseContext(), MainActivity.class);
-                in.putExtra("status", PlaybackStatus.PLAYING);
-                PendingIntent pi = PendingIntent.getActivity(getBaseContext(), 1, in, PendingIntent.FLAG_UPDATE_CURRENT);
-                try {
-                    pi.send(getApplicationContext(),1,in);
-                } catch (PendingIntent.CanceledException e) {
-                    e.printStackTrace();
-                }
-                play(streamUrl);
-                notificationManager.startNotify(PlaybackStatus.PLAYING);
+                        notificationManager.startNotify(PlaybackStatus.PLAYING);
 
-            }
-        });
-        tr.start();
-        //        }
+                    }
+                });
+                tr.start();
+
+                break;
+                case  PlaybackStatus.PAUSED:
+                    pause();
+                    
+                break;
+                 case  PlaybackStatus.STOPPED:
+                     stop();
+                break;
+            case PlaybackStatus.PLAYING:
+                    resume();
+
+                break;
+
+        }
+
 
 
         return START_NOT_STICKY;

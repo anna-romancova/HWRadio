@@ -46,22 +46,21 @@ public class MediaNotificationManager {
     public void startNotify(String playbackStatus) {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
-
         int icon = R.drawable.ic_pause_white;
         Intent playbackAction = new Intent(service, SecondServiceRadio.class);
-        playbackAction.setAction(SecondServiceRadio.ACTION_PAUSE);
+        playbackAction.setAction(PlaybackStatus.PAUSED);
         PendingIntent action = PendingIntent.getService(service, 1, playbackAction, 0);
 
         if(playbackStatus.equals(PlaybackStatus.PAUSED)){
 
             icon = R.drawable.ic_play_white;
-            playbackAction.setAction(SecondServiceRadio.ACTION_PLAY);
+            playbackAction.setAction(PlaybackStatus.PLAYING);
             action = PendingIntent.getService(service, 2, playbackAction, 0);
 
         }
 
         Intent stopIntent = new Intent(service, SecondServiceRadio.class);
-        stopIntent.setAction(SecondServiceRadio.ACTION_STOP);
+        stopIntent.setAction(PlaybackStatus.STOPPED);
         PendingIntent stopAction = PendingIntent.getService(service, 3, stopIntent, 0);
 
         Intent intent = new Intent(service, MainActivity.class);
@@ -92,7 +91,7 @@ public class MediaNotificationManager {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setWhen(System.currentTimeMillis())
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                .setMediaSession(service.getMediaSession().getSessionToken())
+                   .setMediaSession(service.getMediaSession().getSessionToken())
                 .setShowActionsInCompactView(0, 1)
                 .setShowCancelButton(true)
                 .setCancelButtonIntent(stopAction));
