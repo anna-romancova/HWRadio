@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //               Toast.makeText(this,"click play",Toast.LENGTH_SHORT).show();
                 PendingIntent pi = createPendingResult(1, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
                 Toast.makeText(this,streamUrl,Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent("itstap.edu.hwradio.SecondServiceRadio")
+                    Intent intent = new Intent("SecondServiceRadio.class")
                         .setAction(PlaybackStatus.IDLE)
                         .putExtra("url", streamUrl)
                         .putExtra("name", name.getText().toString())
@@ -148,7 +148,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(this,"click stop",Toast.LENGTH_SHORT).show();
                     PendingIntent pi = createPendingResult(2, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    Intent  intent = new Intent("itstap.edu.hwradio.SecondServiceRadio")
+                    Intent  intent = new Intent("SecondServiceRadio.class")
                             .setAction(PlaybackStatus.STOPPED)
                             .putExtra("name", "Stop")
                             .putExtra("pi",pi);
