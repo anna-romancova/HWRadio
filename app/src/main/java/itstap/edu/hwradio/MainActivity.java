@@ -22,10 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import java.io.IOException;
-
 import itstap.edu.hwradio.list.Shoutcast;
 import itstap.edu.hwradio.list.ShoutcastHelper;
 import itstap.edu.hwradio.list.ShoutcastListAdapter;
@@ -130,7 +127,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //               Toast.makeText(this,"click play",Toast.LENGTH_SHORT).show();
                 PendingIntent pi = createPendingResult(1, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
                 Toast.makeText(this,streamUrl,Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent("SecondServiceRadio.class")
+                    Intent intent = new Intent("itstap.edu.hwradio0.SecondServiceRadio")
                         .setAction(PlaybackStatus.IDLE)
                         .putExtra("url", streamUrl)
                         .putExtra("name", name.getText().toString())
@@ -148,7 +145,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(this,"click stop",Toast.LENGTH_SHORT).show();
                     PendingIntent pi = createPendingResult(2, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    Intent  intent = new Intent("SecondServiceRadio.class")
+                    Intent  intent = new Intent("itstap.edu.hwradio0.SecondServiceRadio")
                             .setAction(PlaybackStatus.STOPPED)
                             .putExtra("name", "Stop")
                             .putExtra("pi",pi);
