@@ -45,6 +45,10 @@ public class MediaNotificationManager {
     }
 
     public void startNotify(String playbackStatus) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Notification.MediaStyle style = new Notification.MediaStyle();
+        }
+
 
         Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
         int icon = R.drawable.ic_pause_white;
@@ -92,7 +96,6 @@ public class MediaNotificationManager {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setWhen(System.currentTimeMillis())
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                   .setMediaSession(service.getMediaSession().getSessionToken())
                 .setShowActionsInCompactView(0, 1)
                 .setShowCancelButton(true)
                 .setCancelButtonIntent(stopAction));
