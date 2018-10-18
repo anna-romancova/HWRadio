@@ -38,13 +38,16 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     }
 
     private void pause() {
+
         mediaPlayer.pause();
+        if(tr.isAlive()){
+
         tr.interrupt();
+        }
         notificationManager.startNotify(PlaybackStatus.PAUSED);
     }
 
     public void resume() {
-
 
         if (streamUrl != null) {
             play(streamUrl);
@@ -102,9 +105,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play(String streamUrl) {
-        if(tr.isAlive()){
-            tr.interrupt();
-        }
+
 
         mediaPlayer = new MediaPlayer();
         try {
@@ -123,6 +124,9 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
+
         String action = intent.getAction();
         if (TextUtils.isEmpty(action))
             return START_NOT_STICKY;
@@ -133,8 +137,12 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
             MainActivity.STREAM = streamUrl;
         }
 
+
         switch (action) {
             case PlaybackStatus.IDLE:
+                if(tr!=null&& tr.isAlive()){
+                    tr.interrupt();
+                }
 
                 tr = new Thread(new Runnable() {
                     @Override
@@ -172,11 +180,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
                 break;
 
         }
-
-
-
-
-
+        tr.start();
         return START_STICKY;
     }
 
