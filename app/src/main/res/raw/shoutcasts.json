@@ -1,27 +1,27 @@
 [
   {
     "name" : "Hit FM Ukraine",
-    "stream" : "http://streema.com/radios/play/7642"
+    "stream" : "http://online-hitfm.tavrmedia.ua/HitFM"
   },
   {
     "name": "Русское Радио",
-    "stream": "https://onlineradiobox.com/ua/russkoe.radio/?cs=ua.russkoe.radio&played=1"
+    "stream": "http://online-rusradio.tavrmedia.ua/RusRadio"
   },
   {
     "name": "109 FM UKRAINE",
-    "stream": "https://tunein.com/radio/109-FM-UKRAINE-s140249/"
+    "stream": "http://radio.109fm.net:4580/radio"
   },
   {
     "name": "AvtoRadio Ukraine - FM 105.8",
     "stream": "http://streema.com/radios/play/4945"
   },
   {
-    "name": "KISS FM Ukraine - FM 106.5",
-    "stream": "http://streema.com/radios/play/9585"
+    "name": "Наше Радио",
+    "stream": "http://cast.radiogroup.com.ua/nashe"
   },
   {
-  "name" : "luxfm- Radio 1",
-  "stream" : "https://onlineradiobox.com/ua/luxfm/?cs=ua.luxfm&played=1"
+  "name" : "NRJ",
+  "stream" : "http://cast.nrj.in.ua/nrj"
   },
   {
     "name": "BBC - Radio 2",

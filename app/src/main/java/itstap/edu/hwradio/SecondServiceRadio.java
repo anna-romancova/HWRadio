@@ -33,11 +33,13 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+        tr.interrupt();
         notificationManager.cancelNotify();
     }
 
     private void pause() {
         mediaPlayer.pause();
+        tr.interrupt();
         notificationManager.startNotify(PlaybackStatus.PAUSED);
     }
 
@@ -51,6 +53,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
             play(MainActivity.STREAM);
             notificationManager.startNotify(PlaybackStatus.PLAYING);
         }
+        tr.interrupt();
     }
 
 
@@ -127,6 +130,9 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
         }
         switch (action) {
             case PlaybackStatus.IDLE:
+                if(tr.isAlive()){
+                    tr.interrupt();
+                }
                 tr = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -174,5 +180,6 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
         super.onDestroy();
         Log.i(LOG_TAG, "Stopping playback service, releasing resources");
         mediaPlayer.release();
+        tr.interrupt();
     }
 }
