@@ -106,9 +106,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play(String streamUrl) {
-        if ( tr.isAlive()){
-            tr.interrupt();
-        }
+
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(streamUrl);
@@ -142,6 +140,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
 
         switch (action) {
             case PlaybackStatus.IDLE:
+
                 tr = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -179,8 +178,12 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
 
         }
 
+        if (tr.isAlive()) {
+            tr.interrupt();
 
-       tr.start();
+        } else {
+            tr.start();
+        }
         return START_NOT_STICKY;
     }
 
