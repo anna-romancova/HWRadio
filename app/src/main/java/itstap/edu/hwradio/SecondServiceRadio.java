@@ -26,6 +26,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
         super.onCreate();
         notificationManager = new MediaNotificationManager(this);
         Log.i(LOG_TAG, "Create service");
+
     }
 
     private void stop() {
@@ -105,8 +106,9 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play(String streamUrl) {
-
-
+        if (tr.getState() != Thread.State.NEW ){
+            tr.interrupt();
+        }
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(streamUrl);
@@ -140,10 +142,6 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
 
         switch (action) {
             case PlaybackStatus.IDLE:
-                if(tr!=null&& tr.isAlive()){
-                    tr.interrupt();
-                }
-
                 tr = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -180,7 +178,9 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
                 break;
 
         }
-        tr.start();
+
+
+       tr.start();
         return START_STICKY;
     }
 
