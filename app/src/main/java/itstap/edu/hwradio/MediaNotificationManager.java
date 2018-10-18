@@ -21,6 +21,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 public class MediaNotificationManager {
     public static final int NOTIFICATION_ID = 555;
+
     private final String PRIMARY_CHANNEL = "PRIMARY_CHANNEL_ID";
     private final String PRIMARY_CHANNEL_NAME = "PRIMARY";
 

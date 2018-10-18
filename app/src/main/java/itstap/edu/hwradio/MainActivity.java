@@ -30,7 +30,8 @@ import itstap.edu.hwradio.list.ShoutcastListAdapter;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    public static final String DATA_STREAM ="http://37.59.14.77:8352/stream" ;
+    public final static String DATA_STREAM ="http://37.59.14.77:8352/stream" ;
+    public  static String STREAM ="" ;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private ImageButton playTrigger;
     private  MediaPlayer mediaPlayer;

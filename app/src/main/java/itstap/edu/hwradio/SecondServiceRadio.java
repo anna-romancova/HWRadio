@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.media.MediaMetadataCompat;
@@ -39,7 +40,7 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
     private PlaybackStateCompat playbackState;
     private Binder binder = new ServiceBinder();
     private MediaSessionCompat mediaSession;
-    private String streamUrl;
+    private String streamUrl="";
     private MediaNotificationManager notificationManager;
     private MediaPlayer mediaPlayer;
 
@@ -124,9 +125,14 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
     }
     public void resume() {
 
-        if(streamUrl != null)
+
+        if(streamUrl!= null){
             play(streamUrl);
-        notificationManager.startNotify(PlaybackStatus.PLAYING);
+        notificationManager.startNotify(PlaybackStatus.PLAYING);}
+        else {
+            play(MainActivity.STREAM);
+            notificationManager.startNotify(PlaybackStatus.PLAYING);
+        }
     }
 
 
@@ -199,15 +205,16 @@ public  class SecondServiceRadio extends Service implements  MediaPlayer.OnPrepa
             return START_NOT_STICKY;
         Log.e("action_onStartCommand",action);
         streamUrl= intent.getStringExtra("url");
+        if(streamUrl!=null)
+        MainActivity.STREAM=streamUrl;
         switch (action){
             case PlaybackStatus.IDLE :
                 Thread tr=new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Intent in = new Intent(getBaseContext(), MainActivity.class);
-                        in.putExtra("status", PlaybackStatus.PLAYING);
+                       /* Intent in = new Intent(getBaseContext(), MainActivity.class);
+                        in.putExtra("status", PlaybackStatus.PLAYING);*/
                         play(streamUrl);
-
                         notificationManager.startNotify(PlaybackStatus.PLAYING);
 
                     }

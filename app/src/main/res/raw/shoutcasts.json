@@ -5,11 +5,11 @@
   },
   {
     "name": "Русское Радио",
-    "stream": "http://streema.com/radios/play/631"
+    "stream": "https://onlineradiobox.com/ua/russkoe.radio/?cs=ua.russkoe.radio&played=1"
   },
   {
     "name": "109 FM UKRAINE",
-    "stream": "http://streema.com/radios/play/43866"
+    "stream": "https://tunein.com/radio/109-FM-UKRAINE-s140249/"
   },
   {
     "name": "AvtoRadio Ukraine - FM 105.8",
@@ -18,5 +18,37 @@
   {
     "name": "KISS FM Ukraine - FM 106.5",
     "stream": "http://streema.com/radios/play/9585"
+  },
+  {
+  "name" : "luxfm- Radio 1",
+  "stream" : "https://onlineradiobox.com/ua/luxfm/?cs=ua.luxfm&played=1"
+  },
+  {
+    "name": "BBC - Radio 2",
+    "stream": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio2_mf_p"
+  },
+  {
+    "name": "BBC - Radio 3",
+    "stream": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio3_mf_p"
+  },
+  {
+    "name": "BBC - Radio 4",
+    "stream": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio4fm_mf_p"
+  },
+  {
+    "name": "BBC - Radio 5 live",
+    "stream": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio5live_mf_p"
+  },
+  {
+    "name": "BBC - Radio 6",
+    "stream": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_6music_mf_p"
+  },
+  {
+    "name": "BBC Radio Asian Network",
+    "stream": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_asianet_mf_p"
+  },
+  {
+    "name" : "BBC World Service",
+    "stream" : "http://bbcwssc.ic.llnwd.net/stream/bbcwssc_mp1_ws-eieuk"
   }
 ]
