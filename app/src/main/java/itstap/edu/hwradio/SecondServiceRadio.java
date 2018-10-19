@@ -1,6 +1,7 @@
 package itstap.edu.hwradio;
 
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -50,6 +51,10 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
         tr.interrupt();
         }
         notificationManager.startNotify(PlaybackStatus.PAUSED);
+    /*    Intent intentToActivity = new Intent(getBaseContext(),MainActivity.class)
+                .setAction(PlaybackStatus.PAUSED)
+                .setPackage(this.getPackageName());
+        intentToActivity*/
     }
 
     public void resume() {

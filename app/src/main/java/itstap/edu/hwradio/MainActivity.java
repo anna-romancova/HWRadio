@@ -110,12 +110,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onDestroy();
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 1) {
-            playTrigger.setImageResource(R.drawable.ic_pause_black);
+    protected void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        if (action != null) {
+            Log.d("this is creating", "shiva said right");
+            if(action==PlaybackStatus.PAUSED) {
+                playTrigger.setImageResource(R.drawable.ic_play_arrow_black);
+            }
         }
+        super.onNewIntent(intent);
     }
 
     @Override

@@ -45,9 +45,7 @@ public class MediaNotificationManager {
     }
 
     public void startNotify(String playbackStatus) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            Notification.MediaStyle style = new Notification.MediaStyle();
-        }
+
 
 
         Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
@@ -71,7 +69,8 @@ public class MediaNotificationManager {
         Intent intent = new Intent(service, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, 0);
+        PendingIntent pendingIntent;
+        pendingIntent = PendingIntent.getActivity(service.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         notificationManager.cancel(NOTIFICATION_ID);
 
