@@ -118,7 +118,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play(String streamUrl) {
-        if(mediaPlayer!=null&& mediaPlayer.isPlaying()){
+        if(mediaPlayer!=null){
             mediaPlayer.stop();
             mediaPlayer.release();
         }
