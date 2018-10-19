@@ -20,6 +20,7 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     private String streamUrl = "";
     private MediaNotificationManager notificationManager;
     private MediaPlayer mediaPlayer;
+    private String action;
 
     @Override
     public void onCreate() {
@@ -34,7 +35,10 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
             mediaPlayer.stop();
             mediaPlayer.release();
         }
-        tr.interrupt();
+        if(tr.isAlive()){
+
+            tr.interrupt();
+        }
         notificationManager.cancelNotify();
     }
 
@@ -57,7 +61,10 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
             play(MainActivity.STREAM);
             notificationManager.startNotify(PlaybackStatus.PLAYING);
         }
-        tr.interrupt();
+        if(tr.isAlive()){
+
+            tr.interrupt();
+        }
     }
 
 
@@ -106,9 +113,10 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     }
 
     public void play(String streamUrl) {
-
-
-
+        if(mediaPlayer!=null&& mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(streamUrl);
@@ -127,58 +135,43 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
-
-        String action = intent.getAction();
+        action  = intent.getAction();
         if (TextUtils.isEmpty(action))
             return START_NOT_STICKY;
-
         Log.i(LOG_TAG, action);
         streamUrl = intent.getStringExtra("url");
         if (streamUrl != null) {
             MainActivity.STREAM = streamUrl;
         }
+        tr = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
+                switch (action) {
+                    case PlaybackStatus.IDLE:
 
-        switch (action) {
-            case PlaybackStatus.IDLE:
-
-                tr = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
                         play(streamUrl);
-
-                    }
-                });
-                break;
-            case PlaybackStatus.PAUSED:
-                tr = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+                        break;
+                    case PlaybackStatus.PAUSED:
                         pause();
-                    }
-                });
-                break;
-            case PlaybackStatus.STOPPED:
-                tr = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+
+                        break;
+                    case PlaybackStatus.STOPPED:
+
                         stop();
 
-                    }
-                });
-                break;
-            case PlaybackStatus.PLAYING:
-                tr = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+                        break;
+                    case PlaybackStatus.PLAYING:
+
                         resume();
 
-                    }
-                });
-                break;
+                        break;
 
-        }
+                }
+            }
+
+        });
+
 
             tr.start();
 
@@ -193,6 +186,9 @@ public class SecondServiceRadio extends Service implements MediaPlayer.OnPrepare
         super.onDestroy();
         Log.i(LOG_TAG, "Stopping playback service, releasing resources");
         mediaPlayer.release();
-        tr.interrupt();
+        if(tr.isAlive()){
+
+            tr.interrupt();
+        }
     }
 }
